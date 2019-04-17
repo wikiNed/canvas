@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <meta name="keywords" content="关键词">
+        <meta name="description" content="描述">
+        <meta name="author" content="练习 加油">
+        <style>
+            body{font-family: "Microsoft YaHei",serif;}
+            body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+            ol,ul,li{margin:0;padding:0;list-style:none;}
+            img{border:none;}
+            html,body{
+                width: 100%;
+                height: 100%;
+            }
+            body{
+                background-color: #111;
+                overflow: hidden;
+                position: relative;
+                z-index: 0;
+            }
+            canvas{
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            canvas:nth-child(1){
+                z-index: 100;
+            }
+            canvas:nth-child(2){
+                z-index: 10;
+            }
+            canvas:nth-child(3){
+                z-index: 1;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="wrap"></div>
+        <canvas></canvas>
+        <canvas></canvas>
+        <canvas></canvas>
+        
+        <script>
+
+            let oC = document.querySelectorAll('canvas'),
+                cxt1 = oC[0].getContext('2d'), //绘制线性雨水
+                cxt2 = oC[1].getContext('2d'), //绘制雨点
+                cxt3 = oC[2].getContext('2d'), //绘制雷电
+                w,
+                h,
+                rTnumber = 500,
+                rTv = 25,
+                rT = [],
+                rPnumber = 500,
+                rP = [],
+                light = [],
+                lTimeCuttent = 0,
+                lTimeCount = 0;
+
+            resize()
+            window.addEventListener('resize',resize);
+            function resize() {
+                oC.forEach((item,index)=>{
+                    w = item.width = window.innerWidth;
+                    h = item.height = window.innerHeight
+                })
+            }
+
+            function random(min,max) {
+                return Math.random()*(max-min+1)+min
+            }
+            function randomInt(min,max) {
+                return Math.floor(Math.random()*(max-min+1)+min)
+            }
+
+            //创建雨水
+            function createRT() {
+                for (let i = 0; i < rTnumber; i++) {
+                    rT[i] = {
+                        x:random(0,w),
+                        y:random(0,h),
+                        length: randomInt(1,800),
+                        opacity:Math.random()*0.2,
+                        xs:random(-2,2),
+                        ys:random(10,20)
+                    }
+                }
+            }
+            //创建雨点
+            function createRP(){
+                for (let i = 0; i < rPnumber; i++) {
+                    rP[i] = {
+                        x:random(0,w),
+                        y:random(0,h),
+                        l:Math.random(),
+                        xs:random(0,2),
+                        ys:random(1,10)
+                    }
+                }
+            }
+            //创建雷电
+            function createL(){
+                let x = random(100,w-100),
+                    y = random(20,h/4),
+                    createCount = randomInt(1,3);
+                for(let i = 0;i<createCount;i++){
+                    light.push({
+                        x,
+                        y,
+                        xRange:random(5,30),
+                        yRange:random(10,25),
+                        path:[{
+                            x,
+                            y,
+                        }],
+                        pathLimit:random(40,50)
+                    })
+                }
+            }
+
+            //初始化
+            init()
+            function init() {
+                createRT()
+                createL()
+                createRP()
+                window.addEventListener('resize',createRT)
+            }
+
+            //动画
+            loop()
+            function loop() {
+                animateRT()
+                animateRP()
+                animateL()
+                requestAnimationFrame(loop);
+            }
+            //清除雨水
+            function clearCxt1() {
+                cxt1.clearRect(0,0,w,h)
+            }
+            
+            //雨水动画
+            function animateRT() {
+                //绘制雨线
+                clearCxt1()
+                for(let i=0;i<rTnumber;i++){
+                    if(rT[i].y>=h){
+                        rT[i].y = h-rT[i].y-rT[i].length;
+                    }else{
+                        rT[i].y += rTv;
+                    }
+                    drawRT(i)
+                }
+            }
+
+            //绘制雨水
+            function drawRT(i) {
+                cxt1.beginPath();
+                let bg = cxt1.createLinearGradient(0,rT[i].y,0,rT[i].y+rT[i].length);
+                bg.addColorStop(0,'rgba(255,255,255,0)');
+                bg.addColorStop(0,'rgba(255,255,255,'+rT[i].opacity+')')
+
+                cxt1.fillStyle = bg
+                cxt1.fillRect(rT[i].x,rT[i].y,Math.random()*0.3,rT[i].length);
+                cxt1.fill()
+            }
+
+            //雨点
+            function clearCxt2() {
+                cxt2.clearRect(0,0,w,h)
+            }
+            function animateRP() {
+                clearCxt2()
+                //绘制雨滴
+                for(let i=0;i<rPnumber;i++){
+                    rP[i].x += rP[i].xs;
+                    rP[i].y += rP[i].ys;
+
+                    if(rP[i].x>w||rP[i].y>h){
+                        rP[i].x = random(0,w);
+                        rP[i].y = random(0,h);
+                    }
+
+                    drawRP(i)
+                }
+            }
+            function drawRP(i) {
+                cxt2.beginPath();
+                cxt2.moveTo(rP[i].x,rP[i].y);
+                cxt2.lineTo(rP[i].x+rP[i].l*rP[i].xs,rP[i].y+rP[i].l*rP[i].ys);
+                cxt2.strokeStyle = 'rgba(255,255,255,0.5)';
+                cxt2.lineWidth = Math.random()*0.5;
+                cxt2.lineCap = 'round';
+                cxt2.stroke()
+            }
+
+            //雷电
+            function clearCxt3() {
+                cxt3.globalCompositeOperation = 'destination-out';
+                cxt3.fillStyle = 'rgba(0,0,0,'+random(1,30)/100+')';
+                cxt3.fillRect(0,0,w,h);
+                cxt3.globalCompositeOperation = 'source-over'
+            }
+            function animateL() {
+                clearCxt3()
+                //控制雷电数量
+                lTimeCuttent++;
+                if( lTimeCuttent >= lTimeCount ){
+                    createL()
+                    lTimeCuttent = 0;
+                    lTimeCount= randomInt(200,300);
+                }
+                drawL()
+            }
+            
+            function drawL() {
+                for(let i = 0;i<light.length;i++){
+                    let lights= light[i];
+                    lights.path.push({
+                        x:lights.path[lights.path.length-1].x+(random(0,lights.yRange)-(lights.yRange/2)),
+                        y:lights.path[lights.path.length-1].y+(random(0,lights.yRange))
+                    })
+                    cxt3.strokeStyle = 'rgba(255,255,255,0.5)';
+                    cxt3.lineWidth = Math.random()+0.3;
+
+                    if(randomInt(0,15) === 10){
+                        cxt3.lineWidth = Math.random()+2;
+                    }
+
+                    //会一直PUSH信息
+                    if( lights.path.length > lights.pathLimit){
+                        light.splice(i,1)
+                    }
+
+                    cxt3.beginPath();
+                    cxt3.moveTo(lights.x,lights.y);
+                    for(let p=0;p<lights.path.length;p++){
+                        cxt3.lineTo(lights.path[p].x,lights.path[p].y)
+                    }
+
+                    //闪光效果
+                    if(randomInt(0,700) === 10){
+                        cxt3.fillStyle = 'rgba(255,255,255,'+random(1,3)+')';
+                        cxt3.fillRect(0,0,w,h);
+                    }
+
+                    cxt3.stroke()
+                }
+            }
+
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

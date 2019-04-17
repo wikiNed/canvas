@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <meta name="keywords" content="关键词">
+        <meta name="description" content="描述">
+        <meta name="author" content="练习 加油">
+        <style>
+            body{font-family: "Microsoft YaHei",serif;}
+            body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+            ol,ul,li{margin:0;padding:0;list-style:none;}
+            img{border:none;}
+            body{
+                margin: 0;
+                background-color: black;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wrap"></div>
+        <canvas></canvas>
+        
+        <script>
+
+            let anim = {
+                init(){
+                    this.oC = document.querySelector('canvas');
+                    this.cxt = this.oC.getContext('2d');
+                    this.letter = 'I LOVE U';
+                    this.total = 100;//绘制数量
+                    this.particles = [];//每个字符
+
+                    this.resize();
+                    window.addEventListener('resize',()=>this.resize())
+
+                    this.loop();
+                },
+                //窗口大小改变模块
+                resize(){
+                     this.w = this.oC.width = window.innerWidth;
+                     this.h = this.oC.height = window.innerHeight;
+                },
+                //动画模块
+                loop(){
+                    this.render()
+                    requestAnimationFrame(this.loop.bind(this))
+                },
+
+                render(){
+                    this.fade()
+                    //配置信息
+                    this.particles.push({
+                        x:this.w/2,
+                        y:this.h,
+                        xs:(Math.random()*20)-10,
+                        ys:(Math.random()*10)-10,
+                        font:this.letter[Math.floor(Math.random()*this.letter.length)],
+                        color:[155,100,50,0.8]
+                    })
+                    this.clearP();
+
+                    this.drawParticles();
+                },
+                drawParticles(){
+                    for(let i=0,pCount=this.particles.length;i<pCount;i++){
+                        let particle = this.particles[i],
+                            h = particle.color[0],
+                            s = particle.color[1]+'%',
+                            l = particle.color[2]+'%',
+                            a = particle.color[3],
+                            hsla = `hsla(${h},${s},${l},${a})`
+
+                        this.cxt.font = '12px 微软雅黑';
+                        this.cxt.fillStyle = hsla;
+                        this.cxt.fillText(particle.font,particle.x,particle.y);
+
+                        particle.x += particle.xs;
+                        particle.y += particle.ys;
+                        particle.y *= 0.98;//衰减系数
+
+                        particle.color[0]+=1;//色度
+                        particle.color[2]*=0.99;//亮度
+
+                        if( particle.color[0]>252 ){
+                            particle.color[2]=100;
+                            particle.color[3]=1;
+                        }
+
+                    }
+
+                },
+                //幻影覆盖
+                fade(){
+                    this.cxt.fillStyle = 'rgba(0,0,0,0.1)';
+                    this.cxt.fillRect(0,0,this.w,this.h);
+                },
+                //清除
+                clearP(){
+                    if( this.particles.length>this.total ){
+                        this.particles.shift()
+                    }
+                }
+            }
+            anim.init()
+
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

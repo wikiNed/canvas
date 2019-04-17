@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="keywords" content="关键词">
+    <meta name="description" content="描述">
+    <meta name="author" content="练习 加油">
+    <style>
+        body{font-family: "Microsoft YaHei",serif;}
+        body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+        ol,ul,li{margin:0;padding:0;list-style:none;}
+        img{border:none;}
+        canvas{
+            background: url("./img/timg2.jpg");
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+
+    <script>
+        let c = document.querySelector('canvas'),
+            cxt = c.getContext('2d');
+
+        resize();
+        window.addEventListener('resize',resize);
+
+        function resize() {
+            c.width = window.innerWidth;
+            c.height = window.innerHeight;
+        }
+
+        let mouse = {
+            x:null,
+            y:null,
+            max:20000//平方,吸引半径
+        }
+
+        //鼠标事件
+        window.onmousemove = function (e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        }
+        window.onmouseleave = function () {
+            mouse.x = null;
+            mouse.y = null;
+        }
+
+        //例子集合
+        let dots = [];
+        for(let i=0;i<50;i++){
+            dots.push({
+                x:Math.random()*c.width,
+                y:Math.random()*c.height,
+                xv:Math.random()*2-1,
+                yv:Math.random()*2-1,
+                max:6000
+            })
+        }
+
+        //创建
+        create();
+        function create(){
+            cxt.clearRect(0,0,c.width,c.height)
+            let ndots;
+            ndots = [mouse].concat(dots);
+            ndots.forEach(function (dot) {
+                // console.log(dot);
+                // dot.x += dot.xv;
+                // dot.y += dot.yv;
+                //
+                // dot.xv *=(dot.x>c.width||dot.x<0)?-1:1;
+                // dot.yv *=(dot.y>c.height||dot.x<0)?-1:1;
+
+                let a = Math.random(),
+                    w = Math.floor(Math.random()*4),
+                    h = Math.floor(Math.random()*4);
+                cxt.fillStyle = `rgba(255,255,255,${a})`
+                cxt.fillRect(dot.x-1,dot.y-1,w,h)
+            })
+            requestAnimationFrame(create)
+        }
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

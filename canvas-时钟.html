@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <meta name="keywords" content="关键词">
+        <meta name="description" content="描述">
+        <meta name="author" content="练习 加油">
+        <style>
+            body{font-family: "Microsoft YaHei",serif;}
+            body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+            ol,ul,li{margin:0;padding:0;list-style:none;}
+            img{border:none;}
+
+            canvas{
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas width="500px" height="500px"></canvas>
+        
+        <script>
+
+            show()
+            function show(){
+                let c = document.querySelector('canvas'),
+                    cxt = c.getContext('2d'),
+                    now = new Date(),
+                    day = now.toLocaleDateString(),
+                    time = now.toLocaleTimeString(),
+                    h = now.getHours(),
+                    m = now.getMinutes(),
+                    s = now.getSeconds();
+                // console.log(day, time);
+
+                cxt.lineWidth = 17 ;
+                cxt.strokeStyle = '#00ffff';
+
+                cxt.clearRect(0,0,500,500);
+
+                let color = cxt.createRadialGradient(250,250,1,250,250,300);
+                color.addColorStop(0,'#03303a');
+                color.addColorStop(1,'black');
+                cxt.fillStyle = color;
+                cxt.fillRect(0,0,500,500);
+
+                cxt.beginPath();
+                cxt.font = '25px 微软雅黑';
+                cxt.fillStyle = '#00ffff';
+                cxt.fillText(day,170,240);
+                cxt.fillText(time,170,260);
+
+                let start = 270/180*Math.PI;
+                cxt.beginPath();
+                cxt.arc(250,250,200,start,(30*h-90)/180*Math.PI,false);
+                cxt.stroke();
+
+                cxt.beginPath();
+                cxt.arc(250,250,170,start,(6*m-90)/180*Math.PI,false);
+                cxt.stroke();
+
+                cxt.beginPath();
+                cxt.arc(250,250,140,start,(6*s-90)/180*Math.PI,false);
+                cxt.stroke();
+
+                requestAnimationFrame(show)
+            }
+
+
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

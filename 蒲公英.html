@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <meta name="keywords" content="关键词">
+        <meta name="description" content="描述">
+        <meta name="author" content="练习 加油">
+        <style>
+            body{font-family: "Microsoft YaHei",serif;}
+            body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+            ol,ul,li{margin:0;padding:0;list-style:none;}
+            img{border:none;}
+
+            canvas{
+                background: black;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas></canvas>
+        
+        <script>
+            let c = document.querySelector('canvas'),
+                cxt = c.getContext('2d'),
+                flowers = [],
+                bool = true;
+
+            //调整窗口
+            resize();
+            window.addEventListener('resize',resize)
+            function resize() {
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+            }
+
+            //创建蒲公英
+            for(let i = 0;i<50;i++){
+                flowers.push({
+                    end:{
+                        x:c.width*Math.random(),
+                        y:c.height*Math.random()
+                    },
+                    branches:Math.floor(Math.random()*12+1),
+                    length:500,
+                    limit:15
+                })
+            }
+
+            //创建
+            create();
+            function create() {
+                flowers.forEach(function (flower) {
+                    let x = flower.end.x,
+                        y = flower.end.y,
+                        xs = Math.max(50,Math.random()*400-200),
+                        ys = Math.max(50,Math.random()*400-200),
+                        rand = bool?-1:1;
+                    console.log(xs, ys);
+                    cxt.beginPath();
+                    cxt.strokeStyle = 'white';
+                    cxt.moveTo(x,y);
+                    cxt.lineTo(x+xs*rand,y+ys*rand);
+                    cxt.stroke();
+                    bool = !bool;
+                })
+            }
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

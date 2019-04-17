@@ -74,8 +74,8 @@
                 // dot.yv *=(dot.y>c.height||dot.x<0)?-1:1;
 
                 let a = Math.random(),
-                    w = Math.floor(Math.random()*4),
-                    h = Math.floor(Math.random()*4);
+                    w = Math.floor(Math.random()*10),
+                    h = Math.floor(Math.random()*10);
                 cxt.fillStyle = `rgba(255,255,255,${a})`;
                 cxt.fillRect(dot.x-1,dot.y-1,w,h);
             });

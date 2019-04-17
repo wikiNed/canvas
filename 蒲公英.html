@@ -28,7 +28,7 @@
 
             //调整窗口
             resize();
-            window.addEventListener('resize',resize)
+            window.addEventListener('resize',resize);
             function resize() {
                 c.width = window.innerWidth;
                 c.height = window.innerHeight;
@@ -50,20 +50,22 @@
             //创建
             create();
             function create() {
-                flowers.forEach(function (flower) {
-                    let x = flower.end.x,
-                        y = flower.end.y,
-                        xs = Math.max(50,Math.random()*400-200),
-                        ys = Math.max(50,Math.random()*400-200),
-                        rand = bool?-1:1;
-                    console.log(xs, ys);
-                    cxt.beginPath();
-                    cxt.strokeStyle = 'white';
-                    cxt.moveTo(x,y);
-                    cxt.lineTo(x+xs*rand,y+ys*rand);
-                    cxt.stroke();
-                    bool = !bool;
-                })
+                setInterval(
+                    function () {
+                        cxt.clearRect(0,0,c.width,c.height);
+                        flowers.forEach(function (flower) {
+                            let x = flower.end.x,
+                                y = flower.end.y,
+                                xs = Math.max(50,Math.random()*400-200),
+                                ys = Math.max(50,Math.random()*400-200),
+                                rand = bool?-1:1;
+                            cxt.beginPath();
+                            cxt.strokeStyle = 'white';
+                            cxt.moveTo(x,y);
+                            cxt.lineTo(x+xs*rand,y+ys*rand);
+                            cxt.stroke();
+                            bool = !bool;
+                        })},500)
             }
         </script>
     </body>
